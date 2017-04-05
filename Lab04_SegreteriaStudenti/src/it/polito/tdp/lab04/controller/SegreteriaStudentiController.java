@@ -1,6 +1,5 @@
 package it.polito.tdp.lab04.controller;
 
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -17,7 +16,6 @@ import javafx.scene.control.TextField;
 public class SegreteriaStudentiController {
 
 	private Model model;
-	List<Corso> corsi = new LinkedList<Corso>();
 
 	@FXML
 	private ComboBox<Corso> comboCorso;
@@ -48,29 +46,43 @@ public class SegreteriaStudentiController {
 
 	@FXML
 	private TextField txtCognome;
+	
 
 	public void setModel(Model model) {
-
+		this.model = model;
+		comboCorso.getItems().addAll(model.getListaCorsi());
+		comboCorso.setValue(model.getListaCorsi().get(0));
 	}
 
 	@FXML
 	void doReset(ActionEvent event) {
-
+		txtResult.clear();
 	}
 
 	@FXML
 	void doCercaNome(ActionEvent event) {
-
+		
+		Studente s = model.getStudente(Integer.parseInt(txtMatricola.getText()));
+		if(model.studenteValido(s)) {
+			txtNome.setText(s.getNome());
+		    txtCognome.setText(s.getCognome());
+		}
 	}
 
 	@FXML
 	void doCercaIscrittiCorso(ActionEvent event) {
-
+		
+		List<Studente> studentiIscritti = new LinkedList<Studente>(model.getStudentiIscritti(comboCorso.getValue().getCodice()));
+		for(Studente s : studentiIscritti)
+			txtResult.appendText(s.toString() + "\n");
 	}
 
 	@FXML
 	void doCercaCorsi(ActionEvent event) {
-
+		
+		List<Corso> cercaCorsi = new LinkedList<Corso>(model.getCorsiStudente(Integer.parseInt(txtMatricola.getText())));
+		for(Corso c : cercaCorsi)
+				txtResult.appendText(c.toString() + "\n");
 	}
 
 	@FXML
@@ -91,5 +103,4 @@ public class SegreteriaStudentiController {
 		assert txtMatricola != null : "fx:id=\"txtMatricola\" was not injected: check your FXML file 'SegreteriaStudenti.fxml'.";
 		assert btnReset != null : "fx:id=\"btnReset\" was not injected: check your FXML file 'SegreteriaStudenti.fxml'.";
 	}
-
 }
